@@ -2,13 +2,21 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
+use App\Service\UserService;
 use App\User;
 use Illuminate\Http\Request;
 use Symfony\Contracts\Service\Attribute\Required;
 
-class UserController extends Controller
+class UserController extends ApiController
 {
+    protected $service;
+
+    public function __construct(UserService $service)
+    {
+        $this->service=$service;
+
+    }
     /**
      * Display a listing of the resource.
      *
@@ -16,18 +24,18 @@ class UserController extends Controller
      */
     public function index()
     {
-        $usuarios = User::all();
+        $usuarios = $this->service->showAll();
 
-        return response()->json(['data' => $usuarios], 200);
+        return $this->showAll($usuarios);
     }
 
-  
+
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-     
+
     public function store(Request $request)
     {
    $reglas = [
@@ -46,8 +54,8 @@ class UserController extends Controller
 
       $usuario = User::create($campos);
 
-      return response()->json(['data' => $usuario, 201]);
-   
+      return $this->showOne($usuario, 201);
+
     }
 
     /**
@@ -64,7 +72,7 @@ class UserController extends Controller
           return response()->json(['data'=>'no se encontro el usuario'],404);
         }
 
-        return response()->json(['data' => $usuario], 200);
+         return $this->showOne($usuario);
     }
 
     /**
@@ -73,7 +81,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    
+
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
@@ -108,9 +116,9 @@ class UserController extends Controller
         }
         $user->save();
 
-        return response()->json(['data' => $user], 200);
+         return $this->showOne($user);
     }
- 
+
 
     /**
      * Remove the specified resource from storage.
@@ -128,6 +136,10 @@ class UserController extends Controller
       return response()->json(['el usuario no se puede eliminar'],412);
     }
 
-      return response()->json(['data' => $user], 200);
+       return $this->showOne($user);
     }
+
+
+
+
 }

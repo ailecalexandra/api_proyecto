@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Buyer;
 
 use App\Buyer;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 
-class BuyerController extends Controller
+class BuyerController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -15,9 +15,10 @@ class BuyerController extends Controller
      */
     public function index()
     {
+      
         $compradores = Buyer::has('transactions')->with('transactions')->get();
 
-        return response()->json(['data' => $compradores], 200);
+        return $this->showAll($compradores);
     }
 
     /**
@@ -29,21 +30,21 @@ class BuyerController extends Controller
     
     public function show($id)
     {
-         $compradores = Buyer::find($id);
-        if ($compradores==null)
+         $comprador = Buyer::find($id);
+        if ($comprador==null)
         {
           return response()->json(['data'=>'no se encontro el usuario'],404);
         }
 
-        return response()->json(['data' => $compradores], 200);
+        $transactions=$comprador->transactions()->first();
+        if (empty($transactions) || $transactions===null) {
+             return response()->json(['data'=>'no exiten transacciones en este usuario'],422);
+          }
+
+         return $this->showOne($comprador);
+        
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-   
+
    
 }
