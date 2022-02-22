@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 trait ApiResponse
 {
-  private function succesResponse($data, $code)
+  public function succesResponse($data, $code=200)
   {
     return response()->json(['data' => $data], $code);
   }
 
-  protected function errorResponse($message, $code)
+  protected function errorResponse($message, $code=500)
   {
     return response()->json(['error' => $message, 'code' => $code], $code);
   }

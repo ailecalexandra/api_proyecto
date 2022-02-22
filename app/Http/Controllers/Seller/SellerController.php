@@ -3,11 +3,18 @@
 namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\ApiController;
+use App\Repository\SellerRepository;
 use App\Seller;
+use App\Service\SellerService;
 use Illuminate\Http\Request;
 
 class SellerController extends ApiController
 {
+    public function __construct(SellerRepository $repository)
+    {
+        $this->repository = $repository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,13 +22,13 @@ class SellerController extends ApiController
      */
     public function index()
     {
-        
+
         $vendedores = Seller::has('products')->with('products')->get();
 
         return $this->showAll($vendedores);
     }
 
-    
+
     /**
      * Display the specified resource.
      *
@@ -31,21 +38,15 @@ class SellerController extends ApiController
     public function show($id)
     {
 
-        $vendedor = Seller::find($id);
-        
+        $vendedor = $this->repository->find($id);
 
         if ($vendedor==null)
         {
-            return response()->json(['data'=>'no se encontro el usuario'],404);
+            return $this->errorResponse('not found',404);
         }
-
-      $products=$vendedor->products()->first();
-      if(empty($products) || $products===null){
-        return response()->json(['data'=>'no existen productos en este usuario'],422);
-      }
 
          return $this->showOne($vendedor);
     }
 
-    
+
 }

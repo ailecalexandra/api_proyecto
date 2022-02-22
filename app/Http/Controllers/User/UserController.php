@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\ApiController;
+use App\Repository\UserRepository;
 use App\Service\UserService;
 use App\User;
 use Illuminate\Http\Request;
@@ -12,7 +13,7 @@ class UserController extends ApiController
 {
     protected $service;
 
-    public function __construct(UserService $service)
+    public function __construct(UserRepository $service)
     {
         $this->service=$service;
 
@@ -46,13 +47,7 @@ class UserController extends ApiController
       ];
       $request->validate($reglas);
 
-      $campos = $request->all();
-      $campos ['pasword'] = bcrypt($request->password);
-      $campos['verified'] = User::USUARIO_NO_VERIFICADO;
-      $campos['verification_token'] = User::generarVerificationToken();
-      $campos['admin'] = User::USUARIO_REGULAR;
-
-      $usuario = User::create($campos);
+      $usuario = $this->service->store($request);
 
       return $this->showOne($usuario, 201);
 
@@ -66,10 +61,10 @@ class UserController extends ApiController
      */
     public function show($id)
     {
-        $usuario = User::find($id);
-        if ($usuario==null)
+        $usuario = $this->service->showOne($id);
+        if (is_string($usuario))
         {
-          return response()->json(['data'=>'no se encontro el usuario'],404);
+          return $this->errorResponse($usuario,404);
         }
 
          return $this->showOne($usuario);
@@ -106,13 +101,13 @@ class UserController extends ApiController
 
         if ($request->has('admin')) {
           if (!$user->esVerificado()) {
-            return response()->json(['error' => 'Unicamente los usuarion verificados pueden cambiar su valor de administrador', 'code' => 409], 409);
+            return $this->errorResponse( 'Unicamente los usuarion verificados pueden cambiar su valor de administrador',  409);
           }
           $user->admin = $request->admin;
         }
 
         if (!$user->isDirty()) {
-          return response()->json(['error' => 'Se debe especificar al menos un valor diferente para actualizar', 'code' => 422], 422);
+          return $this->errorResponse('Se debe especificar al menos un valor diferente para actualizar',  422);
         }
         $user->save();
 
@@ -128,15 +123,9 @@ class UserController extends ApiController
      */
     public function destroy($id)
     {
-      $user = User::findOrFail($id);
+      $user = $this->service->delete($id);
 
-    try {
-        $user->delete();
-    } catch (\Throwable $th) {
-      return response()->json(['el usuario no se puede eliminar'],412);
-    }
-
-       return $this->showOne($user);
+       return $this->succesResponse($user);
     }
 
 

@@ -8,6 +8,5 @@ use Illuminate\Http\Request;
 class ApiController extends Controller
 {
     use ApiResponse;
-    protected $service;
 
 }
