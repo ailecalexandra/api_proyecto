@@ -2,8 +2,10 @@
 
 namespace App\Repository;
 
+use App\Enums\ErrorEnum;
 use App\Seller;
 use App\Service\SellerService;
+use Illuminate\Http\Request;
 
 class SellerRepository extends Repository implements SellerService
 {
@@ -12,4 +14,35 @@ class SellerRepository extends Repository implements SellerService
         $this->model = $model;
     }
 
+    public function storeSeller(Request $request)
+    {
+        // TODO: Implement storeSeller() method.
+    }
+
+    public function updateSeller(Request $request, int $id)
+    {
+        // TODO: Implement updateSeller() method.
+    }
+
+    public function indexSeller(Request $request, int $id)
+    {
+
+
+
+
+        // TODO: Implement indexSeller() method.
+    }
+
+    public function showOne(int $id)
+    {
+        $instance = $this->find($id);
+        if ($instance === null)
+        {
+            return self::ERROR_NOT_FOUND;
+        }
+
+        return $instance;
+
+        // TODO: Implement showOne() method.
+    }
 }

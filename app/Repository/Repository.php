@@ -2,9 +2,10 @@
 
 namespace App\Repository;
 
+use App\Enums\ErrorEnum;
 use Illuminate\Database\Eloquent\Model;
 
-class Repository{
+class Repository implements ErrorEnum {
     protected $model;
     public function __construct(Model $model){
         $this->model= $model;

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\ApiController;
+use App\Http\Resources\BuyerCollection;
 use App\Repository\SellerRepository;
 use App\Seller;
 use App\Service\SellerService;
@@ -20,12 +21,19 @@ class SellerController extends ApiController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $type = $request->type == null ? 'DESC' : $request->type;
+        $perPage = $request->perPage == null ? 10 : $request->perPage;
+        $orderBy = $request->orderBy == null ? 'users.id':$request->orderBy;
 
-        $vendedores = Seller::has('products')->with('products')->get();
+        $vendedores = Seller::join('products','users.id','=','products.seller_id')
+            ->orderBy($orderBy,$type)
+            ->paginate($perPage);
 
-        return $this->showAll($vendedores);
+            //has('products')->with('products')->get()
+
+        return $this->succesResponse($vendedores);
     }
 
 
@@ -38,14 +46,11 @@ class SellerController extends ApiController
     public function show($id)
     {
 
-        $vendedor = $this->repository->find($id);
+        $vendedor = $this->repository->showOne($id);
+        $vendedor->products;
 
-        if ($vendedor==null)
-        {
-            return $this->errorResponse('not found',404);
-        }
 
-         return $this->showOne($vendedor);
+         return $this->succesResponse($vendedor);
     }
 
 
