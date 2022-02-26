@@ -24,8 +24,13 @@ class SellerRepository extends Repository implements SellerService
         // TODO: Implement updateSeller() method.
     }
 
-    public function indexSeller(Request $request, int $id)
+    public function indexSeller($orderBy, $type, $perPage)
     {
+        $sellers=$this->model->join('products','users.id','=','products.seller_id')
+            ->orderBy($orderBy,$type)
+            ->paginate($perPage);
+        return $sellers;
+
 
 
 

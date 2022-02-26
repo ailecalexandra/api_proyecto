@@ -27,9 +27,7 @@ class SellerController extends ApiController
         $perPage = $request->perPage == null ? 10 : $request->perPage;
         $orderBy = $request->orderBy == null ? 'users.id':$request->orderBy;
 
-        $vendedores = Seller::join('products','users.id','=','products.seller_id')
-            ->orderBy($orderBy,$type)
-            ->paginate($perPage);
+        $vendedores = $this->repository->indexSeller($orderBy, $type, $perPage);
 
             //has('products')->with('products')->get()
 
