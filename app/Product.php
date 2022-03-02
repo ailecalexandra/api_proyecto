@@ -39,5 +39,26 @@ class Product extends Model
     {
       return $this->belongsToMany(Category::class);
     }
+     public function scopeSearch($query, $target){
+        if( $target != ''){
+            return $query
+                ->where('products.description','LIKE','%'.$target.'%')
+                ->orWhere('categories.name','LIKE','%'.$target.'%')
+                ->orWhere(function($query) use ($target) {
+                    return $query
+                        ->where('sellers.email','LIKE','%'.$target.'%');
+                });
+        }
+
+     }
+     public function scopeCategoryId($query,$target){
+        if ($target != ''){
+            return $query->where(function($query)use($target){
+                return $query->where('categories.id',$target);
+
+            });
+        }
+     }
+
 
 }

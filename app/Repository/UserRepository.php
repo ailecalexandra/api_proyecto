@@ -6,6 +6,7 @@ use App\Service\UserService;
 use App\Traits\ApiResponse;
 use App\User;
 use http\Env\Request;
+use Illuminate\Database\Eloquent\Model;
 
 class UserRepository extends Repository implements UserService
 {
@@ -14,17 +15,17 @@ class UserRepository extends Repository implements UserService
 
     public function __construct(User $model)
     {
-        $this->model=$model;
+        $this->model= $model;
     }
 
-    public function find (int $id)
+    public function findUser(int $id)
     {
         return $this->model->find($id);
     }
 
-    public function showOne(int $id)
+    public function showOneUser(int $id)
     {
-        $instance = $this->find($id);
+        $instance = $this->findUser($id);
         if ($instance === null)
         {
             return 'not found';
@@ -32,27 +33,27 @@ class UserRepository extends Repository implements UserService
         return $instance;
     }
 
-    public function showAll()
+    public function showAllUser()
     {
         return $this->model->all();
     }
 
-    public function delete($id)
+    public function deleteUser($id)
     {
         try {
-            $instance = $this -> find($id);
+            $instance = $this->find($id);
             if ($instance === null)
                 $this->errorResponse('not found',404);
 
             $instance->delete();
-            return $instance->deleted_at;
-
+            return $this->succesResponse(['date_deleted'=>$instance->deleted_at,'message' => 'User deleted successfully']);
+//
         }catch (\Exception $exception){
             return $exception->getMessage();
         }
     }
 
-    public function store (\Illuminate\Http\Request $request)
+    public function storeUser(\Illuminate\Http\Request $request)
     {
         try {
             $campos = $request->all();
@@ -63,7 +64,7 @@ class UserRepository extends Repository implements UserService
             $instance = $this->model->create($campos);
 
             return $instance;
-        }catch (Exception $exception){
+        }catch (\Exception $exception){
             return $exception->getMessage();
         }
     }

@@ -28,11 +28,9 @@ class BuyerController extends ApiController
         $orderBy = $request->orderBy === null ? 'users.id': $request->orderBy;
 
 
-        $compradores = Transaction::join('users','transactions.buyer_id','=','users.id')
-            ->orderBy($orderBy,$type)
-            ->paginate($perPage);
+        $compradores = $this->repository->indexBuyer($orderBy, $type, $perPage);
 
-        return new BuyerCollection($compradores);
+        return $this->succesResponse($compradores);
     }
 
     /**

@@ -3,9 +3,13 @@
 namespace App\Providers;
 
 use App\Repository\BuyerRepository;
+use App\Repository\CategoryRepository;
+use App\Repository\ProductRepository;
 use App\Repository\SellerRepository;
 use App\Repository\UserRepository;
 use App\Service\BuyerService;
+use App\Service\CategoryService;
+use App\Service\ProductService;
 use App\Service\SellerService;
 use App\Service\UserService;
 use Illuminate\Support\ServiceProvider;
@@ -22,6 +26,8 @@ class RegisterServices extends ServiceProvider
         $this->app->bind(UserService::class, UserRepository::class);
         $this->app->bind(SellerService::class, SellerRepository::class);
         $this->app->bind(BuyerService::class,BuyerRepository::class);
+        $this->app->bind(CategoryService::class,CategoryRepository::class);
+        $this->app->bind(ProductService::class,ProductRepository::class);
     }
 
     /**

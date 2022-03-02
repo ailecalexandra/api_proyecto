@@ -6,10 +6,10 @@ use Illuminate\Http\Request;
 
 interface UserService
 {
-    public function showOne(int $id);
-    public function showAll();
-    public function delete($id);
-    public function find (int $id);
-    public function store(Request $request);
+    public function showOneUser(int $id);
+    public function showAllUser();
+    public function deleteUser($id);
+    public function findUser(int $id);
+    public function storeUser(Request $request);
 
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\Controller;
 use App\Repository\UserRepository;
 use App\Service\UserService;
 use App\User;
@@ -13,7 +14,7 @@ class UserController extends ApiController
 {
     protected $service;
 
-    public function __construct(UserRepository $service)
+    public function __construct(UserService $service)
     {
         $this->service=$service;
 
@@ -25,9 +26,9 @@ class UserController extends ApiController
      */
     public function index()
     {
-        $usuarios = $this->service->showAll();
+        $usuarios = $this->service->showAllUser();
 
-        return $this->showAll($usuarios);
+        return $this->succesResponse($usuarios);
     }
 
 
@@ -47,7 +48,7 @@ class UserController extends ApiController
       ];
       $request->validate($reglas);
 
-      $usuario = $this->service->store($request);
+      $usuario = $this->service->storeUser($request);
 
       return $this->showOne($usuario, 201);
 
@@ -61,7 +62,7 @@ class UserController extends ApiController
      */
     public function show($id)
     {
-        $usuario = $this->service->showOne($id);
+        $usuario = $this->service->showOneUser($id);
         if (is_string($usuario))
         {
           return $this->errorResponse($usuario,404);
@@ -123,7 +124,7 @@ class UserController extends ApiController
      */
     public function destroy($id)
     {
-      $user = $this->service->delete($id);
+      $user = $this->service->deleteUser($id);
 
        return $this->succesResponse($user);
     }

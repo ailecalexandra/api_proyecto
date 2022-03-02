@@ -24,8 +24,13 @@ class BuyerRepository extends Repository implements BuyerService
         // TODO: Implement updateBuyer() method.
     }
 
-    public function indexBuyer(Request $request, int $id)
+    public function indexBuyer($orderBy, $type, $perPage)
     {
+        $buyers=$this->model->join('transactions','users.id','=','transactions.buyer_id')
+            ->orderBy($orderBy,$type)
+            ->paginate($perPage);
+        return $buyers;
+
         // TODO: Implement indexBuyer() method.
     }
 
