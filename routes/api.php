@@ -26,7 +26,8 @@ Route::resource('Seller','Seller\SellerController')->only([
 ]);
 Route::resource('Product','Product\ProductController')->only([
   'index',
-  'show'
+  'show',
+    'update'
 ]);
 Route::resource('Category','Category\CategoryController')->except([
   'create',
@@ -34,7 +35,8 @@ Route::resource('Category','Category\CategoryController')->except([
 ]);
 Route::resource('Transaction','Transaction\TransactionController')->only([
   'index',
-  'show'
+  'show',
+    'update'
 ]);
 Route::resource('user','User\UserController')->except([
   'create',

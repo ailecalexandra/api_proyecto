@@ -3,18 +3,29 @@
 namespace App\Http\Controllers\Transaction;
 
 use App\Http\Controllers\ApiController;
+use App\Service\TransactionService;
 use Illuminate\Http\Request;
 
 class TransactionController extends ApiController
 {
+    public function __construct(TransactionService $service)
+    {
+        $this->service = $service;
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $type = $request->type === null ? 'DESC' : $request->type;
+        $perPage = $request->perPage === null ? 10 : $request->perPage;
+        $orderBy = $request->orderBy === null ? 'products.id' : $request->orderBy;
+
+        $transactions = $this->service->indexTransaction($orderBy,$type,$perPage);
+        return $this->succesResponse($transactions);
     }
 
     /**
@@ -46,7 +57,9 @@ class TransactionController extends ApiController
      */
     public function show($id)
     {
-        //
+        $transaction = $this->service->showTransaction($id);
+
+        return $this->succesResponse($transaction);
     }
 
     /**
@@ -69,7 +82,8 @@ class TransactionController extends ApiController
      */
     public function update(Request $request, $id)
     {
-        //
+        $transaction = $this->service->updateTransaction($request, $id);
+        return $this->succesResponse($transaction);
     }
 
     /**
